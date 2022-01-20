@@ -27,9 +27,61 @@ an array, with that object having the following properties and methods:
     - answWrong3: "numbers"
     - someUnknownMethod1: function () {...block code here}
     - someUnknownMethod2: function () {...more block code}
-With the question and answers stored under an object, I think this will facilitate getting its information dynamically when I need to present
-the next question and answer. I can also neatly add to the array object with new questions and aswers. I will use the push method for this. 
-I will use a for loop to cycle through the entire number (length) of object items stored in the array.
+*/
+// global variables here
+var quizQuestionsArray = []; // empty array to hold instances of object Question
+var fileDataArray = [] // empty array to hold split string
+var numQuestionObjects;
+
+// Constructor function
+function Question(interrogative, answRight, answWrong1, answWrong2, answWrong3) {
+    this.interrogative = interrogative;
+    this.answRight = answRight;
+    this.answWrong1 = answWrong1;
+    this.answWrong2 = answWrong2;
+    this.answWrong3 = answWrong3;
+}
+
+// Requiring fs module in which 
+// readFile function is defined.
+const fs = require('fs');
+
+fs.readFile('questions.txt', 'ascii', function (err, data) {
+    if (err) {
+        throw err;
+    }
+    // run storeFileData() and store data in the empty string array fileDataStringArray
+    storeFileData(data);
+})
+
+
+function storeFileData(data) {
+    // populate empty array
+    fileDataArray = data.split(",");
+    
+    // determine how many Questions object we will have
+    numQuestionObjects = fileDataArray.length / 5; 
+
+    // run this for loop for the length of fileDataArray
+    for (let j = 0; j < fileDataArray.length; j++) {
+        // create instance of object inside for loop;
+        let myQuestion = new Question;
+        // assign the property the corresponding value at index position j of fileDataArray
+        myQuestion.interrogative = fileDataArray[j], j++;
+        myQuestion.answRight = fileDataArray[j], j++;
+        myQuestion.answWrong1 = fileDataArray[j], j++;
+        myQuestion.answWrong2 = fileDataArray[j], j++;
+        myQuestion.answWrong3 = fileDataArray[j];
+        // push the object instance to the array quizQuestionsArray
+        quizQuestionsArray.push(myQuestion);
+    }
+}
+
+// this is the callback function when the user clicks on <button> Start Quiz
+function startGame() {
+
+}
+
 
 With respect to the JavaScript for this part, I will attach event listeners to the <button> Start Quiz on the homepage. When the event occurs,
 the callback function will dynamically remove the <div class="front-page-wrapper"> and replace with a new <div class="quiz-question-wrapper">.
@@ -56,3 +108,4 @@ THEN the game is over
 WHEN the game is over
 THEN I can save my initials and score
 */
+
