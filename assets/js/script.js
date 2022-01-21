@@ -33,7 +33,7 @@ an array, with that object having the following properties and methods:
 // import * as fs from 'fs';
 
 // global variables here
-var quizQuestionsArray = []; // empty array to hold instances of object Question
+var questionObjectArray = []; // empty array to hold instances of object Question
 var fileDataArray = [] // empty array to hold split string
 var numQuestionObjects;
 var quizMainEl = document.querySelector("#id-quiz-main");
@@ -59,14 +59,85 @@ class Question {
     }
 }
 
-// readFile('questions.txt', 'ascii', function (err, data) {
-//     if (err) {
-//         throw err;
-//     }
-//     // run storeFileData() and store data in the empty array fileDataArray
-//     storeFileData(data);
-// })
+function displayQuestionAndChoices(container) {
 
+    // some additional code above the for loop may be necessary
+    // I need to build out the handleSelectChoice() callback function on newDivWrapper and match the <li> element which is selected
+
+
+    // loop through as many times as there are objects in questionObjectArray. In the future look to using array.forEach perhaps.
+    for (let i = 0; i < numQuestionObjects; i++) {
+    
+        // create dynamically <h1> element and append to div wrapper
+        var questionTitle = document.createElement("h1");
+        questionTitle.setAttribute("data-index-question-object", i);
+        questionTitle.className = "title-question";
+        questionTitle.innerText = questionObjectArray[i].interrogative;
+        container.appendChild(questionTitle);
+
+        // create dynamically <ul> and append to div wrapper
+        var choiceList = document.createElement("ul");
+        choiceList.setAttribute("data-index-question-object", i);
+        choiceList.className = "style-choice-list";
+        choiceList.textContent = "This is <ul> number " + i;
+        container.appendChild(choiceList);
+
+        // repopulate this array after every iterating through an individual object's properties
+        var propertiesArray = ["answRight", "answWrong1", "answWrong2", "answWrong3"];
+        
+        for (let j = 0; j < 4; j++) {
+            // get some random number to cycle through object properties
+            someRandomNum = randomNumber(0, propertiesArray.length-1);
+            
+            // create dynamically <ul> and append to div wrapper
+            choiceListItem = document.createElement("li");
+
+            // assign the current object to a variable
+            currObj = questionObjectArray[i];
+            // assign the current randomly-selected object property to a variable
+            currProperty = propertiesArray[someRandomNum];
+            // assign the innerText property the value of the randomly-selected property from the current object
+            choiceListItem.innerText = currObj[currProperty];
+            // remove that currently-selected random property from the propertiesArray
+            propertiesArray.splice(someRandomNum, 1);
+            // console.log(`Contents of propertiesArray is ${propertiesArray}.`);
+            console.log(propertiesArray);
+            // append the choice list item to the choice list
+            choiceList.appendChild(choiceListItem);
+        }
+
+    }
+    // append the choice list to the div wrapper
+    container.appendChild(choiceList);
+    
+}
+
+// callback function handleStartQuiz()
+function handleStartQuiz() {
+    // let the quiz begin!
+    console.log("The Start Quiz button has been pressed!");
+    
+    // create new div wrapper for quiz question title and choices
+    var newDivWrapper = document.createElement("div");
+    newDivWrapper.innerText = "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div "+
+                                "Hello I am some text that is inside my parent div ";
+    newDivWrapper.className = "quiz-wrapper";
+
+    // append new elements in the correct order
+    quizWrapperEl.replaceWith(newDivWrapper);
+    
+    // run function displayQuestionAndChoices() and take as parameter the new div element
+    displayQuestionAndChoices(newDivWrapper);
+}
 
 storeFileData();
 
@@ -88,70 +159,24 @@ function storeFileData() {
         myQuestion.answWrong2 = fileDataArray[j], j++;
         myQuestion.answWrong3 = fileDataArray[j];
         // push the object instance to the array quizQuestionsArray
-        quizQuestionsArray.push(myQuestion);
+        questionObjectArray.push(myQuestion);
     }
-    console.log(quizQuestionsArray);
+    // console.log(quizQuestionsArray);
 }
+
 // generate random number between min and max inclusive
 function randomNumber(min, max) {
     var value = Math.floor(Math.random() * (max - min + 1) + min);
     return value;
-  };
+};
 
-function displayQuestionAndChoices(container) {
-    let i = 0;
-    // create new h1 for quiz question title
-    var questionTitle = document.createElement("h1");
-    questionTitle.innerText = quizQuestionsArray[i].interrogative;
-    questionTitle.className = "cover-title";
-    // append question title to container
-    container.appendChild(questionTitle);
-
-    // create choice list items and append to container
-    var choiceList = document.createElement("ul");
-
-    let i = 0;
-    var propertiesArray = ["answRight", "answWrong1", "answWrong2", "answWrong3"];  
-    debugger;
-    // randomly assign value of properties to the current choice list item
-    for (let j = 0; j < 1; j++) {
-        someRandomNum = randomNumber(0, propertiesArray.length-1);
-        // this if conditional will always run
-        if (someRandomNum != null) {
-            choiceListItem = document.createElement("li");
-            currObj = quizQuestionsArray[i];
-            currProperty = propertiesArray[someRandomNum]
-            console.log(currObj, currProperty);
-            choiceListItem.innerText = currObj.currProperty;
-            // propertiesArray = propertiesArray.splice(randomProperty,1);
-            choiceList.appendChild(choiceListItem);    
-        }
-    }
-    // append the choice list to the div wrapper
-    container.appendChild(choiceList);
-}
-
-// callback function handleStartQuiz()
-function handleStartQuiz() {
-    console.log("The Start Quiz button has been pressed!");
-    
-    // create new div wrapper for quiz questions
-    var newDivWrapper = document.createElement("div");
-    newDivWrapper.innerText = "Hello I am some text that is inside my parent div";
-    newDivWrapper.className = "quiz-wrapper";
-
-    // append new elements in the correct order
-    quizWrapperEl.replaceWith(newDivWrapper);
-    
-    // create an unordered list to display multiple choice questions
-    displayQuestionAndChoices(newDivWrapper);
-    
-}
 
 // event listeners
 // on click of <button> Start Quiz, run callback handleStartQuiz()
 startButtonEl.addEventListener('click', handleStartQuiz);
 
+// this event listener may need to move location due to scoping? tbd
+newDivWrapper.addEventListener('click', handleSelectChoice);
 
 /*
 ***** USER STORY *****
