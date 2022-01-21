@@ -28,38 +28,53 @@ an array, with that object having the following properties and methods:
     - someUnknownMethod1: function () {...block code here}
     - someUnknownMethod2: function () {...more block code}
 */
+
+// Requiring fs module in which readFile function is defined.
+// import * as fs from 'fs';
+
 // global variables here
 var quizQuestionsArray = []; // empty array to hold instances of object Question
 var fileDataArray = [] // empty array to hold split string
 var numQuestionObjects;
+var quizMainEl = document.querySelector("#id-quiz-main");
+var quizWrapperEl = document.querySelector("#id-quiz-wrapper");
+var startButtonEl = document.querySelector("#start-my-quiz");
+// string variables which holds the quiz questions
+var data = "Commonly used data types do NOT include:,alerts,strings,booleans,numbers,"+
+"The condition in an if/else statement is enclosed with:,quotes,curly brackets,parenthesis,"+
+"square brackets,Arrays in JavaScript can be used to store:,all of the above,numbers and"+
+" strings,other arrays,booleans,String values must be enclosed with ___ when being assigned"+
+" to variables., quotes, commas, curly brackets, parenthesis,A very useful tool used during"+
+" development and debugging for printing content to the debugger is:,console.log,JavaScript,"+
+"terminal/bash,for loops"
 
 // Constructor function
-function Question(interrogative, answRight, answWrong1, answWrong2, answWrong3) {
-    this.interrogative = interrogative;
-    this.answRight = answRight;
-    this.answWrong1 = answWrong1;
-    this.answWrong2 = answWrong2;
-    this.answWrong3 = answWrong3;
+class Question {
+    constructor(interrogative, answRight, answWrong1, answWrong2, answWrong3) {
+        this.interrogative = interrogative;
+        this.answRight = answRight;
+        this.answWrong1 = answWrong1;
+        this.answWrong2 = answWrong2;
+        this.answWrong3 = answWrong3;
+    }
 }
 
-// Requiring fs module in which 
-// readFile function is defined.
-const fs = require('fs');
-
-fs.readFile('questions.txt', 'ascii', function (err, data) {
-    if (err) {
-        throw err;
-    }
-    // run storeFileData() and store data in the empty string array fileDataStringArray
-    storeFileData(data);
-})
+// readFile('questions.txt', 'ascii', function (err, data) {
+//     if (err) {
+//         throw err;
+//     }
+//     // run storeFileData() and store data in the empty array fileDataArray
+//     storeFileData(data);
+// })
 
 
-function storeFileData(data) {
+storeFileData();
+
+function storeFileData() {
     // populate empty array
     fileDataArray = data.split(",");
     
-    // determine how many Questions object we will have
+    // determine how many Question objects we will have
     numQuestionObjects = fileDataArray.length / 5; 
 
     // run this for loop for the length of fileDataArray
@@ -75,18 +90,67 @@ function storeFileData(data) {
         // push the object instance to the array quizQuestionsArray
         quizQuestionsArray.push(myQuestion);
     }
+    console.log(quizQuestionsArray);
+}
+// generate random number between min and max inclusive
+function randomNumber(min, max) {
+    var value = Math.floor(Math.random() * (max - min + 1) + min);
+    return value;
+  };
+
+function displayQuestionAndChoices(container) {
+    let i = 0;
+    // create new h1 for quiz question title
+    var questionTitle = document.createElement("h1");
+    questionTitle.innerText = quizQuestionsArray[i].interrogative;
+    questionTitle.className = "cover-title";
+    // append question title to container
+    container.appendChild(questionTitle);
+
+    // create choice list items and append to container
+    var choiceList = document.createElement("ul");
+
+    let i = 0;
+    var propertiesArray = ["answRight", "answWrong1", "answWrong2", "answWrong3"];  
+    debugger;
+    // randomly assign value of properties to the current choice list item
+    for (let j = 0; j < 1; j++) {
+        someRandomNum = randomNumber(0, propertiesArray.length-1);
+        // this if conditional will always run
+        if (someRandomNum != null) {
+            choiceListItem = document.createElement("li");
+            currObj = quizQuestionsArray[i];
+            currProperty = propertiesArray[someRandomNum]
+            console.log(currObj, currProperty);
+            choiceListItem.innerText = currObj.currProperty;
+            // propertiesArray = propertiesArray.splice(randomProperty,1);
+            choiceList.appendChild(choiceListItem);    
+        }
+    }
+    // append the choice list to the div wrapper
+    container.appendChild(choiceList);
 }
 
-// this is the callback function when the user clicks on <button> Start Quiz
-function startGame() {
+// callback function handleStartQuiz()
+function handleStartQuiz() {
+    console.log("The Start Quiz button has been pressed!");
+    
+    // create new div wrapper for quiz questions
+    var newDivWrapper = document.createElement("div");
+    newDivWrapper.innerText = "Hello I am some text that is inside my parent div";
+    newDivWrapper.className = "quiz-wrapper";
 
+    // append new elements in the correct order
+    quizWrapperEl.replaceWith(newDivWrapper);
+    
+    // create an unordered list to display multiple choice questions
+    displayQuestionAndChoices(newDivWrapper);
+    
 }
 
-
-With respect to the JavaScript for this part, I will attach event listeners to the <button> Start Quiz on the homepage. When the event occurs,
-the callback function will dynamically remove the <div class="front-page-wrapper"> and replace with a new <div class="quiz-question-wrapper">.
-This callback could be called startQuiz(). Inside startQuiz(), ... 
-*/
+// event listeners
+// on click of <button> Start Quiz, run callback handleStartQuiz()
+startButtonEl.addEventListener('click', handleStartQuiz);
 
 
 /*
