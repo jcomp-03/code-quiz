@@ -15,18 +15,6 @@ Start Quiz. For every wrong answer the user selects, the running time will decre
 Next, the <body> will have a <main> element which presents front page of the code quiz. The <main> will have an <h1>
 element, a <p> element, and the <button> element labeled "Start Quiz". I think I should contain the <h1>, <p>, and <button>
 elements inside a <div class="front-page-wrapper">, for easier manipulation later on.
-
-Upon the <button> Start Quiz being clicked, the first question appears dynamically. This will happen by the current <div>
-which holds the <h1>/<p>/<button> elements being removed and replaced by a new <div> which contains the first question
-and the multiple choices. Thinking intelligently, the question and its multiple choices should be stored as an object inside
-an array, with that object having the following properties and methods:
-    - questionText: "Commonly used data types do not include:"
-    - answRight: "alerts"
-    - answWrong1: "strings"
-    - answWrong2: "booleans"
-    - answWrong3: "numbers"
-    - someUnknownMethod1: function () {...block code here}
-    - someUnknownMethod2: function () {...more block code}
 */
 
 // Requiring fs module in which readFile function is defined.
@@ -35,10 +23,17 @@ an array, with that object having the following properties and methods:
 // global variables here
 var questionObjectArray = []; // empty array to hold instances of object Question
 var fileDataArray = [] // empty array to hold split string
-var numQuestionObjects;
+var numQuestionObjects; // defined in storeFileData()
+
+
 var quizMainEl = document.querySelector("#id-quiz-main");
 var quizWrapperEl = document.querySelector("#id-quiz-wrapper");
-var startButtonEl = document.querySelector("#start-my-quiz");
+var startButtonEl = document.querySelector("#id-start-my-quiz");
+var choiceListEl = document.createElement("ul");
+var choiceListItemEl;
+
+var questionIndex = 0;
+
 // string variables which holds the quiz questions
 var data = "Commonly used data types do NOT include:,alerts,strings,booleans,numbers,"+
 "The condition in an if/else statement is enclosed with:,quotes,curly brackets,parenthesis,"+
@@ -59,87 +54,93 @@ class Question {
     }
 }
 
-function displayQuestionAndChoices(container) {
 
-    // some additional code above the for loop may be necessary
-    // I need to build out the handleSelectChoice() callback function on newDivWrapper and match the <li> element which is selected
+gradeSelectedChoice = function(e) {
+    // debugger;
 
+    var clickedEl = e.target;
+    var userSelection = "";
+    console.log('The clicked element is', clickedEl);
 
-    // loop through as many times as there are objects in questionObjectArray. In the future look to using array.forEach perhaps.
-    for (let i = 0; i < numQuestionObjects; i++) {
-    
-        // create dynamically <h1> element and append to div wrapper
-        var questionTitle = document.createElement("h1");
-        questionTitle.setAttribute("data-index-question-object", i);
-        questionTitle.className = "title-question";
-        questionTitle.innerText = questionObjectArray[i].interrogative;
-        container.appendChild(questionTitle);
+    // check if event target matches <li> element
+    if (clickedEl.matches('li')) {
+        userSelection = clickedEl.textContent.split('.')[1].trim();
 
-        // create dynamically <ul> and append to div wrapper
-        var choiceList = document.createElement("ul");
-        choiceList.setAttribute("data-index-question-object", i);
-        choiceList.className = "style-choice-list";
-        choiceList.textContent = "This is <ul> number " + i;
-        container.appendChild(choiceList);
-
-        // repopulate this array after every iterating through an individual object's properties
-        var propertiesArray = ["answRight", "answWrong1", "answWrong2", "answWrong3"];
-        
-        for (let j = 0; j < 4; j++) {
-            // get some random number to cycle through object properties
-            someRandomNum = randomNumber(0, propertiesArray.length-1);
+        // compare <li> innerText value to the property answRight of the current object
+        if (userSelection === questionObjectArray[questionIndex].answRight) {
+            console.log("The user selected the correct choice. Congratulations!");
             
-            // create dynamically <ul> and append to div wrapper
-            choiceListItem = document.createElement("li");
+        } else {
+            console.log("The user selected WRONG!");
+            // ADD CODE TO DEDUCT POINTS FROM TIME HERE
 
-            // assign the current object to a variable
-            currObj = questionObjectArray[i];
-            // assign the current randomly-selected object property to a variable
-            currProperty = propertiesArray[someRandomNum];
-            // assign the innerText property the value of the randomly-selected property from the current object
-            choiceListItem.innerText = currObj[currProperty];
-            // remove that currently-selected random property from the propertiesArray
-            propertiesArray.splice(someRandomNum, 1);
-            // console.log(`Contents of propertiesArray is ${propertiesArray}.`);
-            console.log(propertiesArray);
-            // append the choice list item to the choice list
-            choiceList.appendChild(choiceListItem);
         }
 
+        questionIndex++;
+        // include conditional logic to check if more questions remain in quiz
+        createQuestionAndChoices(quizWrapperEl, questionIndex);
+
+    } else {
+        console.log("The user did not select an <li> element");
+        alert('Please select a choice');
+        return false;
     }
-    // append the choice list to the div wrapper
-    container.appendChild(choiceList);
+}
+
+function createQuestionAndChoices(container) {
+     // clear out div container of any elements
+    container.replaceChildren();
     
+    // create dynamically <h1> element and append to div wrapper
+    var questionTitle = document.createElement("h1");
+    questionTitle.setAttribute("data-index-question-object", questionIndex);
+    questionTitle.className = "title-question";
+    questionTitle.innerText = questionObjectArray[questionIndex].interrogative;
+
+    // modify choiceListEl and append to div wrapper
+    // var choiceList = document.createElement("ul");
+    choiceListEl.setAttribute("data-index-question-object", questionIndex);
+    choiceListEl.className = "style-choice-list";
+    choiceListEl.textContent = "This is <ul> number " + questionIndex;
+
+    // repopulate this array after iterating through an individual object's properties
+    // since it is gradually reduced to an empty array at the end of the next for loop
+    var propertiesArray = ["answRight", "answWrong1", "answWrong2", "answWrong3"];
+    
+    for (let j = 0; j < 4; j++) {
+        // get some random number to cycle through object properties
+        someRandomNum = randomNumber(0, propertiesArray.length-1);
+        
+        // create dynamically <ul> and append to div wrapper
+        choiceListItem = document.createElement("li");
+        choiceListItem.setAttribute("data-index-question-object", questionIndex);
+        choiceListItem.className = "style-choice-list-item hand-pointer background-change";
+        choiceListEl.appendChild(choiceListItem);
+
+        // assign <li> innerText property to value of the randomly-selected current object property
+        choiceListItem.innerText = (j+1) + '. ' + questionObjectArray[questionIndex][propertiesArray[someRandomNum]]
+        // remove that currently-selected random property from the propertiesArray
+        propertiesArray.splice(someRandomNum, 1);
+    }
+
+    // Append <h1> and <ul> here and return the container
+    container.append(questionTitle,choiceListEl);
+    
+    // update i by one to progress to next question in questionObjectArray
+    // i += 1;
+    return;
+
 }
 
 // callback function handleStartQuiz()
-function handleStartQuiz() {
+handleStartQuiz = function() {
     // let the quiz begin!
     console.log("The Start Quiz button has been pressed!");
-    
-    // create new div wrapper for quiz question title and choices
-    var newDivWrapper = document.createElement("div");
-    newDivWrapper.innerText = "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div "+
-                                "Hello I am some text that is inside my parent div ";
-    newDivWrapper.className = "quiz-wrapper";
 
-    // append new elements in the correct order
-    quizWrapperEl.replaceWith(newDivWrapper);
-    
-    // run function displayQuestionAndChoices() and take as parameter the new div element
-    displayQuestionAndChoices(newDivWrapper);
+    createQuestionAndChoices(quizWrapperEl);
+
 }
 
-storeFileData();
 
 function storeFileData() {
     // populate empty array
@@ -168,15 +169,16 @@ function storeFileData() {
 function randomNumber(min, max) {
     var value = Math.floor(Math.random() * (max - min + 1) + min);
     return value;
-};
-
+}
 
 // event listeners
 // on click of <button> Start Quiz, run callback handleStartQuiz()
 startButtonEl.addEventListener('click', handleStartQuiz);
 
-// this event listener may need to move location due to scoping? tbd
-newDivWrapper.addEventListener('click', handleSelectChoice);
+choiceListEl.addEventListener('click', gradeSelectedChoice);
+
+
+storeFileData();
 
 /*
 ***** USER STORY *****
@@ -197,4 +199,3 @@ THEN the game is over
 WHEN the game is over
 THEN I can save my initials and score
 */
-
