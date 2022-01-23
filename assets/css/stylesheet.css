@@ -20,7 +20,6 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1vw;
     height: 10vw;
 }
 
@@ -35,12 +34,21 @@ header a {
 }
 
 header div {
-    border: solid 5px red;
+    /* border: solid 5px red; */
     padding: 1vw;
     font-size: 1.5vw;
     font-family: sans-serif;
+    display: inherit;
+    justify-content: center;
 }
 
+#timer-element {
+    margin-left: 3%;
+    border: solid 2px black;
+    font-size: 3vw;
+    text-align: center;
+    min-width: 400px;
+}
 #id-quiz-main {
     border: solid 5px red;
     padding: 2vw;

@@ -21,23 +21,23 @@ elements inside a <div class="front-page-wrapper">, for easier manipulation late
 // import * as fs from 'fs';
 
 // global variables here
-var questionObjectArray = []; // empty array to hold instances of object Question
-var fileDataArray = [] // empty array to hold split string
+var questionObjectArray = []; // hold instances of object Question
+var fileDataArray = [] // hold split string from var data
 var numQuestionObjects; // defined in storeFileData()
-
+var questionIndex = 0; // position in object array
+var userScore = 100;
 
 var quizMainEl = document.querySelector("#id-quiz-main");
 var quizWrapperEl = document.querySelector("#id-quiz-wrapper");
 var startButtonEl = document.querySelector("#id-start-my-quiz");
 var choiceListEl = document.createElement("ul");
-var choiceListItemEl;
+var timerEl = document.getElementById("timer-element");
 
-var questionIndex = 0;
 
 // string variables which holds the quiz questions
 var data = "Commonly used data types do NOT include:,alerts,strings,booleans,numbers,"+
 "The condition in an if/else statement is enclosed with:,quotes,curly brackets,parenthesis,"+
-"square brackets,Arrays in JavaScript can be used to store:,all of the above,numbers and"+
+"square brackets,Arrays in JavaScript can be used to store:,all choices,numbers and"+
 " strings,other arrays,booleans,String values must be enclosed with ___ when being assigned"+
 " to variables., quotes, commas, curly brackets, parenthesis,A very useful tool used during"+
 " development and debugging for printing content to the debugger is:,console.log,JavaScript,"+
@@ -54,7 +54,6 @@ class Question {
     }
 }
 
-
 gradeSelectedChoice = function(e) {
     // debugger;
 
@@ -65,21 +64,16 @@ gradeSelectedChoice = function(e) {
     // check if event target matches <li> element
     if (clickedEl.matches('li')) {
         userSelection = clickedEl.textContent.split('.')[1].trim();
-
-        // compare <li> innerText value to the property answRight of the current object
+        // compare <li> textContent value to the property answRight of the current object
         if (userSelection === questionObjectArray[questionIndex].answRight) {
-            console.log("The user selected the correct choice. Congratulations!");
-            
+            console.log("The user selected correctly!");
         } else {
-            console.log("The user selected WRONG!");
-            // ADD CODE TO DEDUCT POINTS FROM TIME HERE
-
+            userScore -= 15;
         }
 
         questionIndex++;
-        // include conditional logic to check if more questions remain in quiz
+        // ADD CODE TO DETERMINE IF MORE QUESTIONS REMAIN
         createQuestionAndChoices(quizWrapperEl, questionIndex);
-
     } else {
         console.log("The user did not select an <li> element");
         alert('Please select a choice');
@@ -87,7 +81,7 @@ gradeSelectedChoice = function(e) {
     }
 }
 
-function createQuestionAndChoices(container) {
+createQuestionAndChoices = function(container) {
      // clear out div container of any elements
     container.replaceChildren();
     
@@ -98,7 +92,6 @@ function createQuestionAndChoices(container) {
     questionTitle.innerText = questionObjectArray[questionIndex].interrogative;
 
     // modify choiceListEl and append to div wrapper
-    // var choiceList = document.createElement("ul");
     choiceListEl.setAttribute("data-index-question-object", questionIndex);
     choiceListEl.className = "style-choice-list";
     choiceListEl.textContent = "This is <ul> number " + questionIndex;
@@ -123,26 +116,30 @@ function createQuestionAndChoices(container) {
         propertiesArray.splice(someRandomNum, 1);
     }
 
-    // Append <h1> and <ul> here and return the container
+    // Append <h1> and <ul> here
     container.append(questionTitle,choiceListEl);
-    
-    // update i by one to progress to next question in questionObjectArray
-    // i += 1;
-    return;
-
 }
 
 // callback function handleStartQuiz()
 handleStartQuiz = function() {
     // let the quiz begin!
     console.log("The Start Quiz button has been pressed!");
-
     createQuestionAndChoices(quizWrapperEl);
-
 }
 
+beginTimer = function() {
+    var myIntervalId = setInterval(() => {
+        userScore--;
+        timerEl.textContent = userScore;
+        if (userScore === 0){
+            clearInterval(myIntervalId);
+            timerEl.textContent = "Time expired";
+            // add code to alert user time is up and give back score
+        }
+    }, 1000);
+}
 
-function storeFileData() {
+storeFileData = function() {
     // populate empty array
     fileDataArray = data.split(",");
     
@@ -172,11 +169,12 @@ function randomNumber(min, max) {
 }
 
 // event listeners
-// on click of <button> Start Quiz, run callback handleStartQuiz()
+// on click of start button, run callback handleStartQuiz()
 startButtonEl.addEventListener('click', handleStartQuiz);
-
+// on click of start button, begin timer
+startButtonEl.addEventListener('click', beginTimer);
+// on click of any <li> element, run callback gradeSelectedChoice()
 choiceListEl.addEventListener('click', gradeSelectedChoice);
-
 
 storeFileData();
 
