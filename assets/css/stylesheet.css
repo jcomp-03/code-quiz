@@ -34,7 +34,6 @@ header a {
 }
 
 header div {
-    /* border: solid 5px red; */
     padding: 1vw;
     font-size: 1.5vw;
     font-family: sans-serif;
@@ -44,32 +43,28 @@ header div {
 
 #timer-element {
     margin-left: 3%;
-    border: solid 2px black;
     font-size: 3vw;
     text-align: center;
     min-width: 400px;
 }
 #id-quiz-main {
-    border: solid 5px red;
     padding: 2vw;
-    height: 100%;
+    height: auto;
     display: flex;
     justify-content: center;
 }
 
 .div-wrapper {
     height: auto;
-    border: solid 2px yellow;
     display: flex;
     flex-direction: column;
 }
 
 .style-choice-list {
     font-size: 1.5vw;
-    display: flex;
+    display: inherit;
     flex-direction: column; 
     list-style-type: none;
-    background-color: green;
 }
 
 .style-choice-list-item {
@@ -81,7 +76,27 @@ header div {
     border-style: none;
     border-radius: 20px;
     display: inline-block;
-    width: auto;
+    width: 25%;
+    position: relative;
+    left: 10px;
+}
+
+footer {
+    /* border: solid 2px black; */
+    border-top: solid 3px grey;
+    display: inline-flex;
+    width: 50%;
+    position: relative;
+    left: 20%;
+}
+
+.choice-result-message {
+    font-size: 2.5vw;
+    font-family: sans-serif;
+    display: inline-block;
+    justify-content: center;
+    position: relative;
+    /* left: 20%; */
 }
 
 .title-question {
@@ -112,7 +127,41 @@ header div {
     border-radius: 20px;
 }
 
+.end-game-save-user-info {
+    margin-top: 1vw;
+    padding: 1vw;
+    display: flex;
+    background-color: green;
+    justify-content: center;
+    align-content: center;
+    border:solid 2px yellow;
+}
+
+.end-game-score-text {
+    font-size: 2vw;
+}
+
+.end-game-input {
+    background-color: rgba(255,255,255, 0.75);
+    border-radius: 10px;
+    display: block;
+    padding: 7px 15px;
+    font-size: 24px;
+    color: yellow;
+    width: 100%;
+}
+
+.end-game-input-label {
+    margin: 0 100px;
+    border: solid 2px black;
+    font-size: 2vw;
+}
+
 /***** UTILITIES *****/
+
+.crosshair:hover{
+    cursor: crosshair;
+}
 
 .hand-pointer:hover {
     cursor: pointer;
@@ -124,4 +173,8 @@ header div {
 
 .no-display {
     display: none;
+}
+
+.font-red {
+    color: red;
 }
