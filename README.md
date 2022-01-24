@@ -17,6 +17,12 @@ THEN I can save my initials and score
 When you review my code, you will observe feature functionality like saving your score and name to local storage, as well as reviewing high scores, is not available. I hope to complete this shortly. Below are a few screenshots which provide visual guide to how the program looks:
 
 #### Screen upon page loading
-![Screen on loading](/assets/images/HTML-screen-capture.JPG)
-#### Screen after generating random password
-![Screen after pressing red button and generating password](/assets/images/HTML-output-password.JPG)
+![Screen on loading](/assets/images/capture-front-page.JPG)
+
+
+#### Program as it looks progressing through the quiz
+![Screen midway through the program](/assets/images/capture-choice-progression.JPG)
+
+#### Final page view
+![Final page display](/assets/images/capture-final-page.JPG)
+
