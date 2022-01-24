@@ -82,12 +82,10 @@ header div {
 }
 
 footer {
-    /* border: solid 2px black; */
     border-top: solid 3px grey;
-    display: inline-flex;
-    width: 50%;
-    position: relative;
-    left: 20%;
+    margin: 0px 15vw;
+    display: flex;
+    justify-content: center;
 }
 
 .choice-result-message {
@@ -96,7 +94,6 @@ footer {
     display: inline-block;
     justify-content: center;
     position: relative;
-    /* left: 20%; */
 }
 
 .title-question {
