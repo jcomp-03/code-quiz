@@ -1,25 +1,3 @@
-/* I will begin the <body> with a <header> element which will hold inside a <p> element tucked in the top left corner of the <body>.
-The <a> will link to a separate html page which stores the scores saved locally within the current browser session. 
-The top 5 highest scores will be listed in descending order. There will be two buttons to go back to the start page
-and to clear out the locally-saved score list. With respect to the JavaScript for this part, I will need to utilize
-localStorage.setItem and localStorage.getItem methods; I will create a function to handle receiving a current user score and
-determining if it merits saving locally, i.e. the score obtained breaks into the top 5 highest scores. The list will be an 
-<ol> element.
-The proposed functions so far are:
-1. function gradeScoreObtained() or similar
-2. function goToStartPage() or similar
-3. function clearOutHighScores() or similar
-The <header> will also have a <div> element which will hold the running time. This <div> will be tucked into the upper left
-corner. The running time will start at the value of 110 and begin to count down the moment the user presses the <button>
-Start Quiz. For every wrong answer the user selects, the running time will decrease by 10 instantaneously.
-Next, the <body> will have a <main> element which presents front page of the code quiz. The <main> will have an <h1>
-element, a <p> element, and the <button> element labeled "Start Quiz". I think I should contain the <h1>, <p>, and <button>
-elements inside a <div class="front-page-wrapper">, for easier manipulation later on.
-*/
-
-// Requiring fs module in which readFile function is defined.
-// import * as fs from 'fs';
-
 // global variables here
 var questionObjectArray = []; // hold instances of object Question
 var fileDataArray = [] // hold split string from var data
@@ -59,10 +37,8 @@ class Question {
 }
 
 gradeSelectedChoice = function(e) {
-    // debugger;
     var clickedEl = e.target;
     // execute block statement while the user still has time
-    // while (userScore > 0) {
         // check if event target matches <li> element
         if (clickedEl.matches('li')) {
             // store <li>'s text in variable userSelection
@@ -88,19 +64,7 @@ gradeSelectedChoice = function(e) {
             console.log("The user did not select an <li> element");
             alert('Please select a choice');
         }
-    // }
-    // setTimeout(timeExpired(), 5000);
-
-
 }
-
-
-// timeExpired = function (container) {
-//     if (userScore == 0) {
-//         console.log('This console.log ran through the timeExpired() function.');
-//     }
-// }
-    
 
 createQuestionAndChoices = function(container) {
     
@@ -114,7 +78,7 @@ createQuestionAndChoices = function(container) {
     questionTitle.className = "title-question";
     questionTitle.innerText = questionObjectArray[questionIndex].interrogative;
 
-    choiceListEl.setAttribute("data-index-question-object", questionIndex);
+    choiceListEl.setAttribute("data-index-question-object", questionIndex); // IN RETROSPECT DID NOT NEED CUSTOM DATA ATTRIBUTE!
     choiceListEl.className = "style-choice-list crosshair";
 
     // repopulate this array after iterating through an individual object's properties
@@ -150,6 +114,7 @@ showRight = function(container) {
     choiceResultMessage.className = "choice-result-message";
     container.appendChild(choiceResultMessage);
 }
+
 showWrong = function(container) {
     // clear the footer of children first
     quizFooterEl.replaceChildren();
@@ -164,11 +129,11 @@ showWrong = function(container) {
 handleStartQuiz = function() {
     // let the quiz begin!
     console.log("The Start Quiz button has been pressed!");
-    
     // create question and choices to begin
     createQuestionAndChoices(quizWrapperEl);
 }
 
+// run this when timer finishes or user answers all quiz questions
 showScoreAndSaveToLocal = function(container) {
     setTimeout( function(){
         if(myIntervalId) {
@@ -217,6 +182,7 @@ beginTimer = function() {
     }, 1000);
 }
 
+// split the large string var data and store it into fileDataArray. Use the array to populate my object Question instances
 storeFileData = function() {
     // populate empty array
     fileDataArray = data.split(",");
@@ -237,7 +203,6 @@ storeFileData = function() {
         // push the object instance to the array quizQuestionsArray
         questionObjectArray.push(myQuestion);
     }
-
 }
 
 // generate random number between min and max inclusive
@@ -255,24 +220,3 @@ startButtonEl.addEventListener('click', beginTimer);
 choiceListEl.addEventListener('click', gradeSelectedChoice);
 
 storeFileData();
-// timeExpired();
-
-/*
-***** USER STORY *****
-AS A coding boot camp student
-I WANT to take a timed quiz on JavaScript fundamentals that stores high scores
-SO THAT I can gauge my progress compared to my peers
-
-***** ACCEPTANCE CRITERIA *****
-GIVEN I am taking a code quiz
-WHEN I click the start button
-THEN a timer starts and I am presented with a question
-WHEN I answer a question
-THEN I am presented with another question
-WHEN I answer a question incorrectly
-THEN time is subtracted from the clock
-WHEN all questions are answered or the timer reaches 0
-THEN the game is over
-WHEN the game is over
-THEN I can save my initials and score
-*/
