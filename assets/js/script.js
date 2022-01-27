@@ -4,17 +4,19 @@ var fileDataArray = [] // hold split string from var data
 var numQuestionObjects; // defined in storeFileData()
 var questionIndex = 0; // position in object array
 var userScore = 100; // begin timer at 100
+var userScoreArray = [] // hold user scores
 var myIntervalId;
 
 // variable references to HTML elements
-var quizMainEl = document.querySelector("#id-quiz-main");
 var quizWrapperEl = document.querySelector("#id-quiz-wrapper");
 var startButtonEl = document.querySelector("#id-start-my-quiz");
+var submitButtonEl = document.createElement("button");
+var nameInputEl = document.createElement('input');
 var choiceListEl = document.createElement("ul");
 var quizFooterEl = document.querySelector("footer");
 var timerEl = document.getElementById("timer-element");
 
-var positiveResponse = ["Correct! Good job.", "Nice! You are correct.", "That's correct!"];
+var positiveResponse = ["Good job!", "Nice! You're correct.", "Well done!", "That's correct!"];
 
 // string variables which holds the quiz questions
 var data = "Commonly used data types do NOT include:,alerts,strings,booleans,numbers,"+
@@ -38,12 +40,11 @@ class Question {
 
 gradeSelectedChoice = function(e) {
     var clickedEl = e.target;
-    // execute block statement while the user still has time
         // check if event target matches <li> element
         if (clickedEl.matches('li')) {
             // store <li>'s text in variable userSelection
             var userSelection = clickedEl.textContent.split('.')[1].trim();
-            // compare <li> textContent value to the property answRight of the current object
+            // compare <li> textContent value to the value of the property answRight of the current object
             if (userSelection === questionObjectArray[questionIndex].answRight) {
                 showRight(quizFooterEl);
             } else {
@@ -58,11 +59,13 @@ gradeSelectedChoice = function(e) {
                 createQuestionAndChoices(quizWrapperEl);
             } else {
                 // user has cycled through all the quiz questions. End game and show results
-                return showScoreAndSaveToLocal(quizWrapperEl);
+                return showScoreAndSaveToLocal(quizWrapperEl, quizFooterEl);
             }
+        // if the thing clicked on is not an <li> element, alert the user
         } else {
             console.log("The user did not select an <li> element");
             alert('Please select a choice');
+            return false;
         }
 }
 
@@ -105,24 +108,24 @@ createQuestionAndChoices = function(container) {
     container.append(questionTitle, choiceListEl);
 }
 
-showRight = function(container) {
+showRight = function(footer) {
     // clear the footer of children first
-    quizFooterEl.replaceChildren();
+    footer.replaceChildren();
     // create <h2> to display grade comment
     var choiceResultMessage = document.createElement("h2");
     choiceResultMessage.textContent = positiveResponse[randomNumber(0,positiveResponse.length-1)];
     choiceResultMessage.className = "choice-result-message";
-    container.appendChild(choiceResultMessage);
+    footer.appendChild(choiceResultMessage);
 }
 
-showWrong = function(container) {
+showWrong = function(footer) {
     // clear the footer of children first
-    quizFooterEl.replaceChildren();
+    footer.replaceChildren();
     // create <h2> to display grade comment
     var choiceResultMessage = document.createElement("h2");
     choiceResultMessage.textContent = "Wrong";
     choiceResultMessage.className = "choice-result-message font-red";
-    container.appendChild(choiceResultMessage);
+    footer.appendChild(choiceResultMessage);
 }
 
 // callback function handleStartQuiz()
@@ -134,34 +137,51 @@ handleStartQuiz = function() {
 }
 
 // run this when timer finishes or user answers all quiz questions
-showScoreAndSaveToLocal = function(container) {
-    setTimeout( function(){
+showScoreAndSaveToLocal = function(container, footer) {
+    setTimeout( function() {
+        // clear out the timer id value created when the setTimeout
+        // function runs initially in the function beginTimer()
+        // In retrospect, not certain this does anything meaningful
         if(myIntervalId) {
             clearInterval(myIntervalId);
         }
+        // clear out the quizWrapperEl and quizFooterEl (if it even exists)
         container.replaceChildren();
-        quizFooterEl.replaceChildren();
+        if(footer != undefined){
+            footer.replaceChildren();
+        }
+        
+        // create the wrapper div to hold the remaining elements below
         var divWrapper = document.createElement('div');
+        divWrapper.className = "end-game-save-user-info";
+        
         var titleEl = document.createElement('h3');
-        var scoreEl = document.createElement('p');
-        var inputEl = document.createElement('input');
-        var inputLabelEl = document.createElement('label');
-        divWrapper.className = "end-game-save-user-info"
-        inputEl.setAttribute("id", "user-initials");
-        inputEl.setAttribute("type", "text");
-        inputEl.className = "end-game-input";
-        inputEl.setAttribute("placeholder", "Enter your first and last name here");
-        inputLabelEl.setAttribute("for", "user-initials");
-        inputLabelEl.className = "end-game-input-label"
-        inputLabelEl.innerText = "Enter your name here:"
         titleEl.className = "title-question";
-        titleEl.innerText = "You finished the quiz OR the quiz time is expired!"
+        titleEl.innerText = "You finished the quiz OR the quiz time is expired!";
+        
+        var scoreEl = document.createElement('p');
         scoreEl.className = "quiz-paragraph end-game-score-text";
         scoreEl.textContent = "Your score is: " + userScore + ".";
         
+        var inputLabelEl = document.createElement('label');
+        inputLabelEl.setAttribute("for", "user-initials");
+        inputLabelEl.className = "end-game-input-label";
+        inputLabelEl.innerText = "Enter your name here:";
+
+        nameInputEl.setAttribute("id", "user-initials");
+        nameInputEl.setAttribute("type", "text");
+        nameInputEl.className = "end-game-input";
+        nameInputEl.setAttribute("placeholder", "Enter your first and last name here");
+
+        submitButtonEl.setAttribute("id", "id-submit-user-info");
+        submitButtonEl.setAttribute("type", "submit");
+        submitButtonEl.className = "end-game-button-submit";
+        submitButtonEl.innerText = "Submit";
+
         // append elements to container here
-        divWrapper.append(inputLabelEl,inputEl);
+        divWrapper.append(inputLabelEl, nameInputEl, submitButtonEl);
         container.append(titleEl, scoreEl, divWrapper);
+
     }, 500);
 }
 
@@ -172,7 +192,7 @@ beginTimer = function() {
         timerEl.textContent = userScore;
         // if at any point the userScore is 0 or < 0, then set userScore to 0 and run
         // the function showScoreAndSaveToLocal()
-        if (userScore === 0 || userScore < 0){
+        if (userScore === 0 || userScore < 0) {
             clearInterval(myIntervalId);
             userScore = 0;
             timerEl.textContent = "Time expired";
@@ -211,6 +231,41 @@ function randomNumber(min, max) {
     return value;
 }
 
+saveUserScore = function(e) {
+    if(e.target.matches("#id-submit-user-info")) {
+        console.log("The submit button has been pressed");
+        
+        var userInfo = nameInputEl.value;
+        console.log(userInfo, typeof userInfo);
+
+        // check that user entered something
+        if (userInfo && userInfo != "") {
+            userScoreArray.push( {
+                name: userInfo,
+                score: userScore
+            });
+            localStorage.setItem("savedScores", JSON.stringify(userScoreArray));
+        } else {
+            alert("Please enter your name in the input field");
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+loadUserScores = function() {
+    // debugger;
+    var savedUserScores = localStorage.getItem("savedScores");
+    // if there are no scores to load from local storage, print to console and exit function
+    if (!savedUserScores) {
+        return console.log("There are no saved user scores to load");
+    }
+    console.log("Saved user scores have been loaded");
+    // parse savedUserScores into an array of objects that we have already declared globally
+    userScoreArray = JSON.parse(savedUserScores);
+};
+
 // event listeners
 // on click of start button, run callback handleStartQuiz()
 startButtonEl.addEventListener('click', handleStartQuiz);
@@ -218,5 +273,9 @@ startButtonEl.addEventListener('click', handleStartQuiz);
 startButtonEl.addEventListener('click', beginTimer);
 // on click of any <li> element, run callback gradeSelectedChoice()
 choiceListEl.addEventListener('click', gradeSelectedChoice);
+// on click of submit button, run callback saveUserInfo()
+quizWrapperEl.addEventListener('click', saveUserScore);
 
 storeFileData();
+
+loadUserScores();
