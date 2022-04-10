@@ -1,4 +1,4 @@
-# Week 4 Challenge Assignment - Code Quiz (Focus: JavaScript)
+# Code Quiz (Focus: JavaScript)
 ###### GitHub Pages Deployment: https://jcomp-03.github.io/wk4-code-quiz/
 
 The purpose of this week's challenge is to build out a code quiz utilizing predominantly JavaScript, its event listener methods, and then taking action when that event is observed. In order to develop the code for completing this assignment, I relied heavily on dynamic HTML markup creation by way of JavaScript.
