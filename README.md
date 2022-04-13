@@ -1,6 +1,6 @@
 # Code Quiz (Focus: JavaScript)
 ###### GitHub Pages Deployment: https://jcomp-03.github.io/code-quiz/
-A timer-based coding quiz application that stores high scores using client-side storage
+A timer-based coding quiz application that stores high scores using client-side storage.
  - Create variables to store the quiz questions
  - Use mouse-click events to start the quiz
  - Write for loops to cycle through quiz questions
