@@ -1,20 +1,16 @@
-# Week 4 Challenge Assignment - Code Quiz (Focus: JavaScript)
+# Code Quiz (Focus: JavaScript)
+###### GitHub Pages Deployment: https://jcomp-03.github.io/code-quiz/
+A timer-based coding quiz application that stores high scores using client-side storage.
+ - Create variables to store the quiz questions
+ - Use mouse-click events to start the quiz
+ - Write for loops to cycle through quiz questions
+ - Use key-press events to receive user input in the form of answers to quiz questions
+ - Create a time limit for the game using time functions
+ - Write conditional statements to determine wrong and right answers
+ - Use client-side storage to store high scores
+ - Use GitHub Pages to publish the page to the web
 
-The purpose of this week's challenge is to build out a code quiz relying heavily on JavaScript, event listeners, and acting upon events that happen on the web page. The assignment featured several criteria:
-
-GIVEN I am taking a code quiz
-WHEN I click the start button
-THEN a timer starts and I am presented with a question
-WHEN I answer a question
-THEN I am presented with another question
-WHEN I answer a question incorrectly
-THEN time is subtracted from the clock
-WHEN all questions are answered or the timer reaches 0
-THEN the game is over
-WHEN the game is over
-THEN I can save my initials and score
-
-When you review my code, you will observe feature functionality like saving your score and name to local storage, as well as reviewing high scores, is not available. I hope to complete this shortly. Below are a few screenshots which provide visual guide to how the program looks:
+Below are a few screenshots which provide visual guide to how the program looks:
 
 #### Screen upon page loading
 ![Screen on loading](/assets/images/capture-front-page.JPG)
@@ -26,3 +22,4 @@ When you review my code, you will observe feature functionality like saving your
 #### Final page view
 ![Final page display](/assets/images/capture-final-page.JPG)
 
+A few aspects about the code I'm proud of having written is that the order in which the multiple-choices answers populate the screen is randomly generated for each question each instance. The easier method would have been to statically assign the order. Also, I incorporated the use of an object class for the questions. So, there are as many instances of object *Question* as there are questions in the question source file. Each object *Question* has five properties: interrogative, answRight, answWrong1, answWrong2, and answWrong3. These property-value pairs are used for giving the **\<h1\>** and **\<li\>** elements their text content.
