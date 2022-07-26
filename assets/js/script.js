@@ -177,17 +177,17 @@ showScore = function(container, footer) {
 
 // callback function beginTimer() called when start button is clicked
 beginTimer = function() {
-    // run the timer down from 100
+    // run the userScore timer down from 100
     myIntervalId = setInterval(() => {
-        userScore--;
-        timerEl.textContent = userScore;
+        userScore--; // globally-scoped variable I define in the beginning of my JS file.
+        timerEl.textContent = userScore; // timerEl is a div to which I print the current time/userScore
         // if at any point the userScore is 0 or < 0, then set userScore to 0 and run
         // the function showScore()
         if (userScore === 0 || userScore < 0) {
             clearInterval(myIntervalId);
             userScore = 0;
             timerEl.textContent = "Time expired";
-            showScore(divWrapperEl);
+            showScore(divWrapperEl); // in my showScore function, I render the user's score to the screen. This can be done many different ways, obviously.
         }
     }, 1000);
 }
@@ -258,6 +258,9 @@ loadUserScores = function() {
 };
 
 goToMainPage = function() {
+    userScore = 100;
+    questionIndex = 0;
+    timerEl.textContent = "";
     divWrapperEl.replaceChildren();
     // dynamically create <h1> element
     var pageTitle = document.createElement("h1");
